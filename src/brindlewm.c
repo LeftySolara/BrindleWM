@@ -25,8 +25,21 @@
 
 #include <stdio.h>
 
+#include <xcb/xcb.h>
+
 int main(int argc, char **argv)
 {
-    printf("Hello world!\n");
+    xcb_connection_t *connection = xcb_connect(NULL, NULL);
+    xcb_screen_t *screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
+
+    /* Print screen info. Just a test to make sure xcb is working. */
+    /* TODO: Remove this */
+    printf("\n");
+    printf("Information for screen %ld:\n", screen->root);
+    printf("Size: %dx%d\n", screen->width_in_pixels, screen->height_in_pixels);
+    printf("\n");
+
+    xcb_disconnect(connection);
+
     return 0;
 }
