@@ -24,16 +24,22 @@
  */
 
 #include "logger.h"
-
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-#include <xcb/xcb.h>
+static const char *log_level_string[] = {
+    "TRACE",
+    "DEBUG",
+    "INFO",
+    "WARN",
+    "ERROR",
+    "FATAL"
+};
 
-int main()
+void log_message(enum log_level level, const char *message)
 {
-    xcb_connection_t *connection = xcb_connect(NULL, NULL);
-    // xcb_screen_t *screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
-    xcb_disconnect(connection);
-
-    return 0;
+    time_t now;
+    time(&now);
+    printf("%s [%s]: %s\n", ctime(&now), log_level_string[level], message);
 }
