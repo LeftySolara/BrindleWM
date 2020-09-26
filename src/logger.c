@@ -41,5 +41,5 @@ void log_message(enum log_level level, const char *message)
 {
     time_t now;
     time(&now);
-    printf("%s [%s]: %s\n", ctime(&now), log_level_string[level], message);
+    fprintf(stderr, "%s [%s]: %s\n", ctime(&now), log_level_string[level], message);
 }
