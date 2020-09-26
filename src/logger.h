@@ -23,17 +23,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "logger.h"
+#ifndef LOGGER_H
+#define LOGGER_H
 
-#include <stdio.h>
+enum log_level {
+    TRACE,
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR,
+    FATAL
+};
 
-#include <xcb/xcb.h>
+#define log_trace(...) log_message(TRACE, __VA_ARGS__)
+#define log_debug(...) log_message(DEBUG, __VA_ARGS__)
+#define log_info(...) log_message(INFO, __VA_ARGS__)
+#define log_warn(...) log_message(WARN, __VA_ARGS__)
+#define log_error(...) log_message(ERROR, __VA_ARGS__)
+#define log_fatal(...) log_message(FATAL, __VA_ARGS__)
 
-int main()
-{
-    xcb_connection_t *connection = xcb_connect(NULL, NULL);
-    // xcb_screen_t *screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
-    xcb_disconnect(connection);
+void log_message(enum log_level level, const char *message);
 
-    return 0;
-}
+#endif /* LOGGER_H */
+
