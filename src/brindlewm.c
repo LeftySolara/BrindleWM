@@ -26,13 +26,40 @@
 #include "logger.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <xcb/xcb.h>
+#include <xcb/xcb_aux.h>
 
 int main()
 {
-    xcb_connection_t *connection = xcb_connect(NULL, NULL);
-    // xcb_screen_t *screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
+    int default_screen;
+    xcb_connection_t *connection = xcb_connect(NULL, &default_screen);
+    xcb_screen_t *screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
+
+    if (xcb_connection_has_error(connection)) {
+        log_error("Error connecting to X server.");
+        exit(1);
+    }
+    
+    /* Define the application as a window manager. */
+    const uint32_t event_mask_val[] = {
+        XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
+        XCB_EVENT_MASK_ENTER_WINDOW          | XCB_EVENT_MASK_LEAVE_WINDOW        |
+        XCB_EVENT_MASK_STRUCTURE_NOTIFY      | XCB_EVENT_MASK_PROPERTY_CHANGE     |
+        XCB_EVENT_MASK_BUTTON_PRESS          | XCB_EVENT_MASK_BUTTON_RELEASE      |
+        XCB_EVENT_MASK_FOCUS_CHANGE
+    };
+    xcb_change_window_attributes(connection, screen->root,
+                                 XCB_CW_EVENT_MASK, event_mask_val);
+
+    xcb_aux_sync(connection);
+    if (xcb_poll_for_event(connection) != NULL) {
+        log_error("Another window manager is already running.");
+        exit(1);
+    }
+    xcb_flush(connection);
+
     xcb_disconnect(connection);
 
     return 0;

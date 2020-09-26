@@ -23,4 +23,4 @@ file(GLOB_RECURSE SOURCE_FILES "src/*.c")
 add_executable(brindlewm ${SOURCE_FILES})
 
 set_target_properties(brindlewm PROPERTIES OUTPUT_NAME "brindlewm")
-target_link_libraries(brindlewm -lxcb)
+target_link_libraries(brindlewm -lxcb -lxcb-util)
