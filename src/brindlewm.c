@@ -65,21 +65,21 @@ int main()
     xcb_generic_event_t *event;
     while (!done && (event = xcb_wait_for_event(connection))) {
         switch (event->response_type & ~0x80) {
-            case XCB_BUTTON_PRESS: {
-                xcb_button_press_event_t *press_event = (xcb_button_press_event_t *)event;
-                if (press_event->detail == XCB_BUTTON_INDEX_1) {
-                    log_info("Left click");
-                    break;
-                }
-                else if (press_event->detail == XCB_BUTTON_INDEX_3) {
-                    log_info("Right click");
-                    break;
-                }
+        case XCB_BUTTON_PRESS: {
+            xcb_button_press_event_t *press_event = (xcb_button_press_event_t *)event;
+            if (press_event->detail == XCB_BUTTON_INDEX_1) {
+                log_info("Left click");
                 break;
             }
-            default: {
+            else if (press_event->detail == XCB_BUTTON_INDEX_3) {
+                log_info("Right click");
                 break;
             }
+            break;
+        }
+        default: {
+            break;
+        }
         }
     }
 
