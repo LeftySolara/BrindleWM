@@ -24,8 +24,8 @@
  */
 
 #include "logger.h"
+
 #include <stdarg.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -38,7 +38,7 @@ static const char *log_level_string[] = {
     "FATAL"
 };
 
-void log_message(enum log_level level, const char *fmt, ...)
+void log_message(enum log_level level, FILE *fp, const char *fmt, ...)
 {
     time_t now;
     time(&now);
@@ -46,8 +46,8 @@ void log_message(enum log_level level, const char *fmt, ...)
     va_list ap;
     va_start(ap, fmt);
 
-    fprintf(stderr, "%s [%s]: ", ctime(&now), log_level_string[level]);
-    vfprintf(stderr, fmt, ap);
+    fprintf(fp, "%s [%s]: ", ctime(&now), log_level_string[level]);
+    vfprintf(fp, fmt, ap);
 
     va_end(ap);
 }
