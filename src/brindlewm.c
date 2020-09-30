@@ -23,6 +23,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "logger.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -39,11 +41,11 @@ int main()
     screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
 
     if (xcb_connection_has_error(connection)) {
-        fprintf(stderr, "ERROR: could not connect to X server.\n");
+        log_error("Could not connect to X server.\n");
         exit(EXIT_FAILURE);
     }
     else {
-        fprintf(stdout, "Successfully connected to X server.\n");
+        log_info("Successfully connected to X server.\n");
     }
 
     /* Define the application as a window manager. */
@@ -62,7 +64,7 @@ int main()
 
     if (error) {
         xcb_disconnect(connection);
-        fprintf(stderr, "ERROR: Another window manager is already running (X error %d). Exiting...\n",
+        log_error("Another window manager is already running (X error %d). Exiting...\n",
                 error->error_code);
         exit(EXIT_FAILURE);
     }
@@ -76,17 +78,17 @@ int main()
         switch (event->response_type & ~0x80) {
         case XCB_EXPOSE: {
             xcb_expose_event_t *ev = (xcb_expose_event_t *)event;
-            fprintf(stdout, "Window %d exposed.\n", ev->window);
+            log_debug("Window %d exposed.\n", ev->window);
             break;
         }
         case XCB_BUTTON_PRESS: {
             xcb_button_press_event_t *ev = (xcb_button_press_event_t *)event;
-            fprintf(stdout, "Button pressed in window %d.\n", ev->event);
+            log_debug("Button pressed in window %d.\n", ev->event);
             break;
         }
         case XCB_KEY_PRESS: {
             xcb_key_press_event_t *ev = (xcb_key_press_event_t *)event;
-            fprintf(stdout, "Key %d pressed.\n", ev->detail);
+            log_debug("Key %d pressed.\n", ev->detail);
             if (ev->detail == 37) {
                 done = 1;
             }
@@ -94,12 +96,12 @@ int main()
         }
         case XCB_CREATE_NOTIFY: {
             xcb_create_notify_event_t *ev = (xcb_create_notify_event_t *)event;
-            fprintf(stdout, "Window %d created with parent %d.\n", ev->window, ev->parent);
+            log_debug("Window %d created with parent %d.\n", ev->window, ev->parent);
             break;
         }
         case XCB_MAP_REQUEST: {
             xcb_map_request_event_t *ev = (xcb_map_request_event_t *)event;
-            fprintf(stdout, "Map request received for window %d.\n", ev->window);
+            log_debug("Map request received for window %d.\n", ev->window);
 
             xcb_window_t frame = xcb_generate_id(connection);
             uint32_t frame_mask = XCB_CW_EVENT_MASK;
@@ -151,14 +153,14 @@ int main()
         }
         case XCB_UNMAP_NOTIFY: {
             xcb_unmap_notify_event_t *ev = (xcb_unmap_notify_event_t *)event;
-            fprintf(stdout, "Unmap request received from window %d.\n", ev->window);
+            log_debug("Unmap request received from window %d.\n", ev->window);
 
             xcb_unmap_window(connection, ev->event);
             xcb_flush(connection);
             break;
         }
         case XCB_DESTROY_NOTIFY: {
-            fprintf(stdout, "Destroy request received.\n");
+            log_debug("Destroy request received.\n");
             break;
         }
         default:
