@@ -37,8 +37,8 @@ enum log_level {
 
 #define log_trace(...) log_message(TRACE, __VA_ARGS__)
 #define log_debug(...) log_message(DEBUG, __VA_ARGS__)
-#define log_info(...) log_message(INFO, __VA_ARGS__)
-#define log_warn(...) log_message(WARN, __VA_ARGS__)
+#define log_info(...)  log_message(INFO, __VA_ARGS__)
+#define log_warn(...)  log_message(WARN, __VA_ARGS__)
 #define log_error(...) log_message(ERROR, __VA_ARGS__)
 #define log_fatal(...) log_message(FATAL, __VA_ARGS__)
 
