@@ -42,7 +42,7 @@ enum log_level {
 #define log_error(...) log_message(ERROR, __VA_ARGS__)
 #define log_fatal(...) log_message(FATAL, __VA_ARGS__)
 
-void log_message(enum log_level level, const char *message);
+void log_message(enum log_level level, const char *fmt, ...);
 
 #endif /* LOGGER_H */
 
