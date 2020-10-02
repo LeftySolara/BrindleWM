@@ -36,4 +36,6 @@ void handle_map_request(xcb_connection_t *connection, xcb_screen_t *screen, xcb_
 void handle_unmap_notify(xcb_connection_t *connection, xcb_generic_event_t *event);
 void handle_destroy_notify();
 
+void handle_events(xcb_connection_t *connection, xcb_screen_t *screen);
+
 #endif

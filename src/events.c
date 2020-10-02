@@ -26,6 +26,8 @@
 #include "events.h"
 #include "logger.h"
 
+#include <stdlib.h>
+
 void handle_expose(xcb_generic_event_t *event)
 {
     xcb_expose_event_t *ev = (xcb_expose_event_t *)event;
@@ -115,4 +117,39 @@ void handle_unmap_notify(xcb_connection_t *connection, xcb_generic_event_t *even
 void handle_destroy_notify()
 {
     log_debug("Destroy request received.\n");
+}
+
+void handle_events(xcb_connection_t *connection, xcb_screen_t *screen)
+{
+    xcb_generic_event_t *event;
+    int done = 0;
+
+    while (!done && (event = xcb_wait_for_event(connection))) {
+        switch (event->response_type & ~0x80) {
+        case XCB_EXPOSE:
+            handle_expose(event);
+            break;
+        case XCB_BUTTON_PRESS:
+            handle_button_press(event);
+            break;
+        case XCB_KEY_PRESS:
+            handle_key_press(event);
+            break;
+        case XCB_CREATE_NOTIFY:
+            handle_create_notify(event);
+            break;
+        case XCB_MAP_REQUEST:
+            handle_map_request(connection, screen, event);
+            break;
+        case XCB_UNMAP_NOTIFY:
+            handle_unmap_notify(connection, event);
+            break;
+        case XCB_DESTROY_NOTIFY:
+            handle_destroy_notify();
+            break;
+        default:
+            break;
+        }
+        free(event);
+    }
 }

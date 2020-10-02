@@ -73,36 +73,7 @@ int main()
     xcb_flush(connection);
 
     /* Main event loop */
-    xcb_generic_event_t *event;
-    int done = 0;
-    while (!done && (event = xcb_wait_for_event(connection))) {
-        switch (event->response_type & ~0x80) {
-        case XCB_EXPOSE:
-            handle_expose(event);
-            break;
-        case XCB_BUTTON_PRESS:
-            handle_button_press(event);
-            break;
-        case XCB_KEY_PRESS:
-            handle_key_press(event);
-            break;
-        case XCB_CREATE_NOTIFY:
-            handle_create_notify(event);
-            break;
-        case XCB_MAP_REQUEST:
-            handle_map_request(connection, screen, event);
-            break;
-        case XCB_UNMAP_NOTIFY:
-            handle_unmap_notify(connection, event);
-            break;
-        case XCB_DESTROY_NOTIFY:
-            handle_destroy_notify();
-            break;
-        default:
-            break;
-        }
-        free(event);
-    }
+    handle_events(connection, screen);
 
     xcb_disconnect(connection);
 
